@@ -27,6 +27,35 @@ const screen = {
                                           </div>`
         }
 
+        let eventsList = user.events.filter(
+            event => event.type === "PushEvent" || event.type === "CreateEvent"
+        );
+
+        let lastTenEvents = eventsList.splice(0, 10);
+        let displayEvents = ""
+
+        lastTenEvents.forEach(event => {
+            let eventName = '';
+            let messageEvent = ''
+            if (event.type === "PushEvent") {
+                eventName = event.repo.name
+                messageEvent = event.payload.commits[0].message;
+            } else if (event.type === "CreateEvent") {
+                eventName = event.repo.name
+                messageEvent = "Não possui commits"
+            } else {
+                return
+            }
+
+            displayEvents += `<li><a href="https://github.com/${eventName}" target="_blank">${eventName}</a> - ${messageEvent}</li>`
+
+        })
+
+        this.userProfile.innerHTML += `<div class="events">
+                                          <h2 class="tittle-events">Eventos</h2>
+                                          <ul>${displayEvents}</ul>
+                                       </div>`
+
 
     },
     renderNotFound() {
